@@ -1,0 +1,129 @@
+Hello Cloud Gurus.
+In this lesson, we'll be learning how to persist
+our Terraform State in AWS S3 Backend.
+Terraform backends basically determine
+how the state is stored.
+You can either store it locally or remotely in a solution
+such as AWS S3.
+By default, the state is stored on your local disk.
+However, that behavior can be changed.
+It can be changed via passing the backend configuration
+to a Terraform block in your Terraform project code.
+However, one thing to note is that variables cannot be used
+as input to the Terraform block that you see to the right.
+Now this takes away from the flexibility
+of being able to interpolate variables inside this block,
+however this is a much requested feature
+and HashiCorp might enable this in the future.
+So let's dive into our demo system
+and show you how to configure and ensure that your backend
+is remotely configured.
+I'm already logged into a system
+where I previously installed Terraform and Ansible
+in one of the previous videos
+and also created a directory for our Terraform project.
+So let's cd into the directory and clear the screen.
+Before we start writing any Terraform code,
+let's see what we need.
+We need an S3 bucket before we can actually store
+the state files inside that bucket.
+So let's go ahead and create an S3 bucket.
+And also remember, we have a lesson on
+how to configure permissions for a Terraform project
+which does require being able to create and delete
+and modify buckets.
+So make sure that you have those permissions
+with the IAM user,
+which is assigned to your Terraform controller node.
+The command for creating an S3 bucket is--
+and let's name our bucket terraformstatebucket.
+And as the name needs to be unique,
+let's give it a random number at the end.
+And if everything goes through successfully,
+we'll see the output that you see here
+with the name of the S3 bucket showing up.
+So I'll copy over the name in my buffer
+and now we'll create a file called backend.tf.
+So just like in the presentation slide that you just saw,
+we'll create the Terraform block.
+We'll peg the required version
+to anything greater than version 12 for Terraform
+so that we don't have any Legacy versions
+which might mess with the code
+that you're going to be writing throughout this course
+as this course requires at least version 12
+of Terraform to work.
+Next stop, we'll get down to the real business,
+defining the backend.
+Now the backend is defined through the backend keyword
+which is in our case S3.
+There's other backends as well,
+but in our case we're using S3
+and we'll start off the backend block with a curly brace.
+And the first thing we'll give is the region
+where we want it to look for our S3 bucket
+and store this data file in.
+In our case, the region has to be us-east-1
+if you're following along.
+Next step, we'll define the profile.
+Now this is not a required parameter.
+However, just for the sake of making sure
+that we're using the right profile
+in case we have more than one profile
+for the AWS CLI in your system,
+it's best to peg your profile within the backend as well.
+So we'll give it the default profile
+which is created when you created the first
+AWS CLI credentials on your system.
+Next, I will give it the key
+or the name that we want the Terraform state file
+to be given to it when it is saved to an S3 backend.
+Let's just give it a name of Terraformstatefile.
+Not very creative, however this should work.
+And finally, we'll give it the name of the bucket
+that we just created.
+So the bucket name was terraformstatebucket6655.
+Let's close off the curly braces to complete this block
+and we should be all good.
+Let's save and quit
+and clear the screen and remember, the very first command
+that we need to run to initialize the backend
+is Terraform init.
+So let's go ahead and do that.
+We've gotten an error
+so let's see what we did wrong here.
+I see that there's a little typo
+where we have accidentally placed a dot before the 0.
+So we'll go back into the file and rectify that.
+Now that it is rectified, let's save the file,
+clear the screen and run Terraform init again.
+And this time, the Terraform init went through
+and notice the message.
+It says successfully configured the backend S3.
+Terraform will automatically use this backend
+unless the backend configuration changes
+and notifies you that the Terraform initialize
+has worked successfully.
+Now let's go ahead and use Terraform format
+to make sure that our code is beautiful and consistent.
+So let's clear the screen and run Terraform format.
+If something is changed by Terraform format,
+that is the code is rearranged,
+it's going to output the name of the file which it modified.
+Otherwise, there's not going to be any output.
+So let's go ahead and cat our file to see
+if there's any changes.
+And you'll notice that Terraform format made some
+minor aesthetic changes to the look of the file.
+However, it did not change the code of the file at all.
+And we have successfully configured our S3 backend.
+Now moving into the future,
+whenever you run Terraform apply,
+it's going to upload the state file to the S3 bucket.
+And even if you lose your system or something goes bad,
+you'll still be able to get your state file
+and continue on with the project,
+knowing what the last state of your project was.
+So this is in a nutshell
+how to configure an S3 backend with Terraform.
+Thank you for going through this lesson.
