@@ -221,7 +221,7 @@ resource "aws_security_group" "lb-sg" {
 resource "aws_security_group" "jenkins-sg-cali" {
   provider = aws.region-worker
 
-  name        = "jenkins-sg-oregon"
+  name        = "jenkins-sg-cali"
   description = "Allow TCP/8080 & TCP/22"
   vpc_id      = aws_vpc.vpc_uswest.id
   ingress {
