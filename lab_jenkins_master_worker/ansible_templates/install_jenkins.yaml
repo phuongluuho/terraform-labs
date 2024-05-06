@@ -15,7 +15,7 @@
 
     - name: clone repo
       git:
-        repo: https://github.com/phuongluuho/content-terraform-jenkins-updated-master.git
+        repo: https://github.com/phuongluuho/content-terraform-jenkins-updated.git
         dest: /tmp/jenkins
 
     - name: Setup Jenkins Repo
