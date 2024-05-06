@@ -10,13 +10,13 @@ output "Jenkins-Master-Private-IP" {
 }
 output "Jenkins-Worker-Public-IPs" {
   value = {
-    for instance in aws_instance.jenkins-worker-oregon :
+    for instance in aws_instance.jenkins-worker-cali :
     instance.id => instance.public_ip
   }
 }
 output "Jenkins-Worker-Private-IPs" {
   value = {
-    for instance in aws_instance.jenkins-worker-oregon :
+    for instance in aws_instance.jenkins-worker-cali :
     instance.id => instance.private_ip
   }
 }
