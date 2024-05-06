@@ -22,7 +22,7 @@ resource "aws_vpc" "vpc_useast" {
 
 }
 
-#Create VPC in us-west-2
+#Create VPC in us-west-1
 resource "aws_vpc" "vpc_uswest" {
   provider             = aws.region-worker
   cidr_block           = "192.168.0.0/16"
@@ -50,13 +50,13 @@ resource "aws_internet_gateway" "igw" {
   vpc_id   = aws_vpc.vpc_useast.id
 }
 
-#Create IGW in us-west-2
-resource "aws_internet_gateway" "igw-oregon" {
+#Create IGW in us-west-1
+resource "aws_internet_gateway" "igw-cali" {
   provider = aws.region-worker
   vpc_id   = aws_vpc.vpc_uswest.id
 }
 
-#Accept VPC peering request in us-west-2 from us-east-1
+#Accept VPC peering request in us-west-1 from us-east-1
 resource "aws_vpc_peering_connection_accepter" "accept_peering" {
   provider                  = aws.region-worker
   vpc_peering_connection_id = aws_vpc_peering_connection.useast1-uswest-2.id
@@ -112,20 +112,20 @@ resource "aws_subnet" "subnet_2" {
 }
 
 
-#Create subnet in us-west-2
-resource "aws_subnet" "subnet_1_oregon" {
+#Create subnet in us-west-1
+resource "aws_subnet" "subnet_1_cali" {
   provider   = aws.region-worker
   vpc_id     = aws_vpc.vpc_uswest.id
   cidr_block = "192.168.1.0/24"
 }
 
-#Create route table in us-west-2
-resource "aws_route_table" "internet_route_oregon" {
+#Create route table in us-west-1
+resource "aws_route_table" "internet_route_cali" {
   provider = aws.region-worker
   vpc_id   = aws_vpc.vpc_uswest.id
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.igw-oregon.id
+    gateway_id = aws_internet_gateway.igw-cali.id
   }
   route {
     cidr_block                = "10.0.1.0/24"
@@ -143,7 +143,7 @@ resource "aws_route_table" "internet_route_oregon" {
 resource "aws_main_route_table_association" "set-worker-default-rt-assoc" {
   provider       = aws.region-worker
   vpc_id         = aws_vpc.vpc_uswest.id
-  route_table_id = aws_route_table.internet_route_oregon.id
+  route_table_id = aws_route_table.internet_route_cali.id
 }
 
 #Create association between route table and subnet_1 in us-east-1
@@ -153,11 +153,11 @@ resource "aws_route_table_association" "internet_association" {
   route_table_id = aws_route_table.internet_route.id
 }
 
-#Create association between route table and subnet_1_oregon in us-west-2
-resource "aws_route_table_association" "internet_association_oregon" {
+#Create association between route table and subnet_1_cali in us-west-1
+resource "aws_route_table_association" "internet_association_cali" {
   provider       = aws.region-worker
-  subnet_id      = aws_subnet.subnet_1_oregon.id
-  route_table_id = aws_route_table.internet_route_oregon.id
+  subnet_id      = aws_subnet.subnet_1_cali.id
+  route_table_id = aws_route_table.internet_route_cali.id
 }
 
 
@@ -182,7 +182,7 @@ resource "aws_security_group" "jenkins-sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
-    description = "allow traffic from us-west-2"
+    description = "allow traffic from us-west-1"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -231,11 +231,11 @@ resource "aws_security_group" "lb-sg" {
   }
 }
 
-#Create SG for allowing TCP/22 from your IP in us-west-2
-resource "aws_security_group" "jenkins-sg-oregon" {
+#Create SG for allowing TCP/22 from your IP in us-west-1
+resource "aws_security_group" "jenkins-sg-cali" {
   provider = aws.region-worker
 
-  name        = "jenkins-sg-oregon"
+  name        = "jenkins-sg-cali"
   description = "Allow TCP/8080 & TCP/22"
   vpc_id      = aws_vpc.vpc_uswest.id
   ingress {
