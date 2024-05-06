@@ -4,7 +4,7 @@ data "aws_ssm_parameter" "JenkinsMasterAmi" {
   name     = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
 }
 
-#Get Linux AMI ID using SSM Parameter endpoint in us-west-2
+#Get Linux AMI ID using SSM Parameter endpoint in us-west-1
 data "aws_ssm_parameter" "JenkinsWorkerAmi" {
   provider = aws.region-worker
   name     = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
@@ -17,7 +17,7 @@ resource "aws_key_pair" "master-key" {
   public_key = file("~/.ssh/id_rsa.pub")
 }
 
-#Create key-pair for logging into EC2 in us-west-2
+#Create key-pair for logging into EC2 in us-west-1
 resource "aws_key_pair" "worker-key" {
   provider   = aws.region-worker
   key_name   = "jenkins"
@@ -45,16 +45,16 @@ EOF
   depends_on = [aws_main_route_table_association.set-master-default-rt-assoc]
 }
 
-#Create EC2 in us-west-2
-resource "aws_instance" "jenkins-worker-oregon" {
+#Create EC2 in us-west-1
+resource "aws_instance" "jenkins-worker-cali" {
   provider                    = aws.region-worker
   count                       = var.workers-count
   ami                         = data.aws_ssm_parameter.JenkinsWorkerAmi.value
   instance_type               = var.instance-type
   key_name                    = aws_key_pair.worker-key.key_name
   associate_public_ip_address = true
-  vpc_security_group_ids      = [aws_security_group.jenkins-sg-oregon.id]
-  subnet_id                   = aws_subnet.subnet_1_oregon.id
+  vpc_security_group_ids      = [aws_security_group.jenkins-sg-cali.id]
+  subnet_id                   = aws_subnet.subnet_1_cali.id
   provisioner "remote-exec" {
     when = destroy
     inline = [
