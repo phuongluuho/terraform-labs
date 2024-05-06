@@ -28,7 +28,7 @@
         state: present
         key: https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
 
-    - name: install java-openjdk21
+    - name: install java-openjdk17
       shell: "sudo yum install java-17-amazon-corretto-devel -y"
 
     - name: install Jenkins
