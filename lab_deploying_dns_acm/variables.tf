@@ -14,7 +14,7 @@ variable "site-name" {
 }
 variable "dns-name" {
   type    = string
-  default = "<insert-domain-name-ending-with-dot>" # e.g "cmcloudlab1234.info."
+  default = "<insert-domain-name-ending-with-dot>" # e.g "learnaws.website."
 }
 
 variable "profile" {
