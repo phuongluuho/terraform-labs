@@ -15,8 +15,8 @@
 
     - name: clone repo
       git:
-        repo: https://github.com/phuongluuho/content-terraform-jenkins-updated.git
-        dest: /tmp/jenkins
+        repo: https://github.com/phuongluuho/config-jenkins.git
+        dest: /home/ec2-user/jenkins
 
     - name: Setup Jenkins Repo
       get_url:
@@ -49,7 +49,7 @@
     - name: Copy over cloned Jenkins /var/lib/jenkins
       copy:
         remote_src: yes
-        src: /tmp/jenkins/jenkins
+        src: /home/ec2-user/jenkins/jenkins
         dest: /var/lib
 
     - name: Restore jenkins user ownership on /var/lib/jenkins
