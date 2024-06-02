@@ -35,7 +35,7 @@ resource "aws_vpc" "vpc_uswest" {
 }
 
 #Initiate Peering connection request from us-east-1
-resource "aws_vpc_peering_connection" "useast1-uswest-2" {
+resource "aws_vpc_peering_connection" "useast1-uswest-1" {
   provider    = aws.region-master
   peer_vpc_id = aws_vpc.vpc_uswest.id
   vpc_id      = aws_vpc.vpc_useast.id
@@ -59,7 +59,7 @@ resource "aws_internet_gateway" "igw-cali" {
 #Accept VPC peering request in us-west-1 from us-east-1
 resource "aws_vpc_peering_connection_accepter" "accept_peering" {
   provider                  = aws.region-worker
-  vpc_peering_connection_id = aws_vpc_peering_connection.useast1-uswest-2.id
+  vpc_peering_connection_id = aws_vpc_peering_connection.useast1-uswest-1.id
   auto_accept               = true
 }
 
@@ -73,7 +73,7 @@ resource "aws_route_table" "internet_route" {
   }
   route {
     cidr_block                = "192.168.1.0/24"
-    vpc_peering_connection_id = aws_vpc_peering_connection.useast1-uswest-2.id
+    vpc_peering_connection_id = aws_vpc_peering_connection.useast1-uswest-1.id
   }
   lifecycle {
     ignore_changes = all
@@ -129,7 +129,7 @@ resource "aws_route_table" "internet_route_cali" {
   }
   route {
     cidr_block                = "10.0.1.0/24"
-    vpc_peering_connection_id = aws_vpc_peering_connection.useast1-uswest-2.id
+    vpc_peering_connection_id = aws_vpc_peering_connection.useast1-uswest-1.id
   }
   lifecycle {
     ignore_changes = all
