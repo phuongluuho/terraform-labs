@@ -7,7 +7,7 @@ data "aws_ssm_parameter" "JenkinsMasterAmi" {
 #Get Linux AMI ID using SSM Parameter endpoint in us-west-1
 data "aws_ssm_parameter" "JenkinsWorkerAmi" {
   provider = aws.region-worker
-  name     = "/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64"
+  name     = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
 }
 
 #Create key-pair for logging into EC2 in us-east-1
